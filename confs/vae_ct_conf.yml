@@ -1,0 +1,137 @@
+# Copyright (c) 2020 Huawei Technologies Co., Ltd.
+# Licensed under CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike 4.0 International) (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+#
+# The code is released for academic research use only. For commercial use, please contact Huawei Technologies Co., Ltd.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# This file contains content licensed by https://github.com/xinntao/BasicSR/blob/master/LICENSE/LICENSE
+
+#### general settings
+name: train
+use_tb_logger: true
+model: LCT
+distortion: ct
+scale: 1
+gpu_ids: [ 2 ]
+
+#### datasets
+datasets:
+  train:
+    name: Gopro
+    mode: LCT_h5
+    img_dir: /home/jili/HTC_code/data/train/Ang_30
+    dataroot_GT: /home/jili_cw4/MIMO-UNet/dataset/GOPRO/GOPRO/train/sharp
+    dataroot_LQ: /home/jili_cw4/MIMO-UNet/dataset/GOPRO/GOPRO/train/blur
+    quant: 32
+    angle: 30
+
+    use_shuffle: true
+    n_workers: 3  # per GPU
+    batch_size: 5
+    size: 256
+    color: RGB
+    transform: true
+    is_test: false
+  val:
+    name: Gopro
+    mode: LCT_h5
+    img_dir: /home/jili/HTC_code/data/train/Ang_30
+    dataroot_GT: /home/jili_cw4/MIMO-UNet/dataset/GOPRO/GOPRO/test/sharp
+    dataroot_LQ: /home/jili_cw4/MIMO-UNet/dataset/GOPRO/GOPRO/test/blur
+    quant: 32
+    angle: 30
+    n_max: 20
+    size: 256
+    transform: true
+    is_test: true
+
+#### Test Settings
+dataroot_GT: /home/jili_cw4/MIMO-UNet/dataset/GOPRO/GOPRO/test/sharp
+dataroot_LR: /home/jili_cw4/MIMO-UNet/dataset/GOPRO/GOPRO/test/blur
+model_path: /home/jili/HTC_code/experiments/train_30/models/latest_G.pth #/home/jili/HTC_code/experiments/train/models/49000_G.pth #/home/jili_cw4/SRFlow/experiments/train/models/378000_G.pth #../pretrained_models/SRFlow_DF2K_4X.pth
+heat: 0.9 # This is the standard deviation of the latent vectors
+save_path: ./test_out
+
+#### network structures
+network_G:
+  which_model_G: UNet #BDFlowNet
+  sub_model_name: U_Net #AttU_Net
+  in_nc: 2
+  out_nc: 1
+# network_G:
+#   which_model_G: UNet #BDFlowNet
+#   input_nc: 2
+#   output_nc: 1
+#   ngf: 12
+#   k_size: 3
+#   n_downsample_global: 4
+#   n_blocks_global: 9
+#   n_local_enhancers: 1
+#   n_blocks_local: 3
+#   norm: 'instance'
+#   start_r: 3
+#   mc: 1024
+#   spatio_size: 32
+#   use_segmentation_model: false
+#   feat_dim: 64
+  
+network_D:
+  input_nc: 1
+  output_nc: 1
+  ndf: 12
+  n_layers_D: 3
+  norm: 'instance'
+  use_sigmoid: false
+  num_D: 2
+  getIntermFeat: false
+  use_SN: false
+#### path
+path:
+  # pretrain_model_G: /home/jili_cw4/MIMO_test_net/MIMO-UNet/weights/MIMO-UNet.pkl
+  root: /home/jili_cw4/Deblur_VAE_code
+  strict_load: true
+  # resume_state: auto
+  experiments_root: experiment_ct
+
+#### training settings: learning rate scheme, loss
+train:
+  manual_seed: 10
+  lr_G: !!float 1.0e-3 #2.5e-4
+  weight_decay_G: 0
+  beta1: 0.9
+  beta2: 0.99
+  lr_scheme: MultiStepLR
+  warmup_iter: -1  # no warm up
+  lr_steps_rel: [ 0.5, 0.75, 0.9, 0.95 ]
+  weight_x: 1.0
+  weight_y: !!float 0.0 #!!float 1e-7
+  lr_gamma: 0.5
+  loss : l2
+  d_name: no_gan
+  adv_lambda: !!float 1e-5
+  weight_kl: !!float 1e-4
+  weight_gan: !!float 0
+
+  # weight_l1: 0.99
+  # weight_fl: 0.0
+
+  niter: 2000000
+  val_freq: 4000 #40000
+
+#### validation settings
+val:
+  heats: [0.5, 0.75, 1.0 ]
+  n_sample: 3
+
+#### logger
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 1e3

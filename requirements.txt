@@ -1,0 +1,13 @@
+# astra-toolbox
+gdown==4.5.3
+Pillow==8.0.1
+pyaml==21.10.1
+PyYAML==6.0
+requests==2.26.0
+scikit-image==0.17.2
+scipy==1.4.1
+torch==1.7.0
+imutils
+opencv-python
+natsort
+torchvision==0.8.0

@@ -14,7 +14,7 @@ class CTDataset(Dataset):
     def __init__(self, image_dir, angle = None, transform=None, is_test=False):
         self.sino_dir = image_dir 
         self.no_angle = angle
-        self.sino_list = glob.glob(os.path.join(self.sino_dir,'*_full.mat'))
+        self.sino_list = glob.glob(os.path.join(self.sino_dir,'*.mat'))
         self.sino_list.sort()
         self.sino_data = []
         self.start_angle = []

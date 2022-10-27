@@ -29,7 +29,6 @@ See the ```requirement.txt``` to install the dependent packages and libraries.
     pip3 install virtualenv
     virtualenv --no-site-packages --python=python3 htc2022
     source htc2022/bin/activate # enter the environment
-    pip3 install -r requirements.txt # install the dependency 
     # deactivate
     ```
  + Install the Cython module
@@ -48,7 +47,10 @@ See the ```requirement.txt``` to install the dependent packages and libraries.
     make install
     cd ~current working directory
     ```
- 
+ + Install requirements
+   ```
+   pip3 install -r requirements.txt # install the dependency 
+   ```
  + (*Automatically download the trained models*) In our code, we use the `gdown` to obtain the training checkpoints in google driver. The following links is used in our evaluations.
    +  Files for seven models are readable by anyone at [Here](https://drive.google.com/drive/folders/1K2KwABjR8oL21MXseu1weJOXuT1ohE0V)
    + If downloading fails, please download them from the above links and put them in the folder `checkpoints`

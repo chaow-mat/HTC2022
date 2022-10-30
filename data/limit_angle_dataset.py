@@ -24,12 +24,12 @@ class CTDataset(Dataset):
         for file in self.sino_list:
             Data = sio.loadmat(file,struct_as_record=False, squeeze_me=True)
             
-            self.sino_data.append(Data['CtDataFull'].sinogram)
-            self.start_angle.append(Data['CtDataFull'].parameters.angles[0])
+            self.sino_data.append(Data['CtDataLimited'].sinogram)
+            self.start_angle.append(Data['CtDataLimited'].parameters.angles[0])
             # name = os.path.splitext(file)[0]
             # Rec_Data = sio.loadmat(name + '_recon_fbp.mat',struct_as_record=False, squeeze_me=True)
             # self.label_data.append(Rec_Data['reconFullFbp'])
-        self.parameters = Data['CtDataFull'].parameters
+        self.parameters = Data['CtDataLimited'].parameters
         self.transform = transform
         self.is_test = is_test
         self._define_set()
